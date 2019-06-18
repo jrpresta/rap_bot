@@ -83,8 +83,8 @@ class Songs(Dataset):
         return self.x[idx], self.y[idx]
 
 
-train_ds = Songs(train)
-test_ds  = Songs(test)
+train_ds = Songs(train[:100])
+test_ds  = Songs(test[:100])
 
 train_dl = DataLoader(train_ds, 64, shuffle=True)
 test_dl  = DataLoader(test_ds, 64)
@@ -162,3 +162,4 @@ criterion = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
 train_model(model, 30)
+torch.save(model.state_dict(), 'MODEL.pth')
