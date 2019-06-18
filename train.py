@@ -83,8 +83,8 @@ class Songs(Dataset):
         return self.x[idx], self.y[idx]
 
 
-train_ds = Songs(train[:100])
-test_ds  = Songs(test[:100])
+train_ds = Songs(train)
+test_ds  = Songs(test)
 
 train_dl = DataLoader(train_ds, 64, shuffle=True)
 test_dl  = DataLoader(test_ds, 64)
