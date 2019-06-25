@@ -9,7 +9,7 @@ from torch.utils.data import Dataset, DataLoader
 
 
 output_file = 'results2.txt'
-num_previous_epochs = 250
+num_previous_epochs = 300
 
 
 music = pd.read_csv('lyrics.csv')
@@ -154,5 +154,5 @@ model.load_state_dict(torch.load('./MODEL2.pth'))
 criterion = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
-train_model(model, 100)
+train_model(model, 300)
 torch.save(model.state_dict(), 'MODEL2.pth')
