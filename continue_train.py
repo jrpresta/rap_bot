@@ -1,9 +1,7 @@
 import pandas as pd
 import numpy as np
-import re
 import string
 import random
-import operator
 import torch
 from torch.utils.data import Dataset, DataLoader
 import pickle
@@ -15,14 +13,8 @@ num_previous_epochs = 300
 
 music = pd.read_csv('hip_hop_filtered.csv')
 
-# hh_lyrics  = music[music['genre'] == 'Hip-Hop']['lyrics']
-# hh_lyrics_ = [h for h in hh_lyrics if type(h) == str]
-# hh_lyrics_ = [h.lower() for h in hh_lyrics_]
-# hh_lyrics_ = [h.translate(str.maketrans('', '', string.punctuation)) for h in hh_lyrics_]
-# hh_lyrics_ = [h.split() for h in hh_lyrics_]
-
 hh_lyrics_ = music.lyrics.values
-hh_lyrics_ = [h.lower() for h in hh_lyrics_]
+hh_lyrics_ = [h.lower() for h in hh_lyrics_ if type(h) == str]
 hh_lyrics_ = [h.translate(str.maketrans('', '', string.punctuation)) for h in hh_lyrics_]
 hh_lyrics_ = [h.split() for h in hh_lyrics_]
 
@@ -106,7 +98,6 @@ class LangModel(torch.nn.Module):
 
 def train_model(mod, n_epochs, train_loss=[], test_loss=[]):
     for i in range(num_previous_epochs, num_previous_epochs+n_epochs):
-        print('training')
         # train
         total_loss, trials = 0, 0
         mod.train()
@@ -120,7 +111,6 @@ def train_model(mod, n_epochs, train_loss=[], test_loss=[]):
 
             trials += y.shape[0]
             total_loss += loss.item()
-        print(total_loss/trials)
         with open(output_file, 'a') as f:
             # f.write(f'train,{i+1},{total_loss/trials}\n')
             print(f'train,{i+1},{total_loss/trials}\n')
@@ -146,8 +136,6 @@ model.load_state_dict(torch.load('./MODEL2.pth'))
 criterion = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
-# train_model(model, 5)
-# torch.save(model.state_dict(), 'MODEL2.pth')
 
 train_model(model, 300)
 torch.save(model.state_dict(), 'MODEL2.pth')
