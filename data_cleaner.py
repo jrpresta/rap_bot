@@ -8,11 +8,6 @@ import operator
 
 from collections import Counter
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-%matplotlib inline
-
-import torch
 from torch.utils.data import Dataset, DataLoader
 
 music = pd.read_csv('lyrics.csv')
