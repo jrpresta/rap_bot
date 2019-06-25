@@ -6,40 +6,31 @@ import random
 import operator
 import torch
 from torch.utils.data import Dataset, DataLoader
+import pickle
 
 
 output_file = 'results2.txt'
 num_previous_epochs = 250
 
 
-music = pd.read_csv('lyrics.csv')
+music = pd.read_csv('hip_hop_filtered.csv')
 
-hh_lyrics  = music[music['genre'] == 'Hip-Hop']['lyrics']
-hh_lyrics_ = [h for h in hh_lyrics if type(h) == str]
+# hh_lyrics  = music[music['genre'] == 'Hip-Hop']['lyrics']
+# hh_lyrics_ = [h for h in hh_lyrics if type(h) == str]
+# hh_lyrics_ = [h.lower() for h in hh_lyrics_]
+# hh_lyrics_ = [h.translate(str.maketrans('', '', string.punctuation)) for h in hh_lyrics_]
+# hh_lyrics_ = [h.split() for h in hh_lyrics_]
+
+hh_lyrics_ = music.lyrics.values
 hh_lyrics_ = [h.lower() for h in hh_lyrics_]
 hh_lyrics_ = [h.translate(str.maketrans('', '', string.punctuation)) for h in hh_lyrics_]
 hh_lyrics_ = [h.split() for h in hh_lyrics_]
 
-# count up the words
-counter = {}
-word2idx = {}
 
-word2idx['<UNK>'] = 0
-word2idx['<EOS>'] = 1
-
-for song in hh_lyrics_:
-    for word in song:
-        if word in counter.keys():
-            counter[word] += 1
-        else:
-            counter[word] = 1
-
-for k, v in counter.items():
-    if v >= 10:
-        word2idx[k] = len(word2idx)
+with open('word2idx.pickle', 'rb') as f:
+    word2idx = pickle.load(f)
 
 V = len(word2idx)
-
 songs = [[word2idx.get(w, 0) for w in song] + [1] for song in hh_lyrics_]
 
 
@@ -131,8 +122,8 @@ def train_model(mod, n_epochs, train_loss=[], test_loss=[]):
             total_loss += loss.item()
         print(total_loss/trials)
         with open(output_file, 'a') as f:
-            f.write(f'train,{i+1},{total_loss/trials}\n')
-
+            # f.write(f'train,{i+1},{total_loss/trials}\n')
+            print(f'train,{i+1},{total_loss/trials}\n')
 
         # test
         if i % 5 == 4:
@@ -144,7 +135,8 @@ def train_model(mod, n_epochs, train_loss=[], test_loss=[]):
                 loss = criterion(y_hat, y)
                 total_test_loss += loss.item()
             with open(output_file, 'a') as f:
-                f.write(f'test,{i+1},{total_test_loss/test_trials}\n')
+                # f.write(f'test,{i+1},{total_test_loss/test_trials}\n')
+                print(f'test,{i+1},{total_test_loss/test_trials}\n')
     return train_loss, test_loss
 
 
@@ -154,5 +146,5 @@ model.load_state_dict(torch.load('./MODEL2.pth'))
 criterion = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
-train_model(model, 100)
-torch.save(model.state_dict(), 'MODEL2.pth')
+train_model(model, 5)
+# torch.save(model.state_dict(), 'MODEL2.pth')
