@@ -10,7 +10,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 
 
-output_file = 'results.txt'
+output_file = 'results2.txt'
 
 
 music = pd.read_csv('lyrics.csv')
@@ -161,5 +161,5 @@ model = LangModel()
 criterion = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
-train_model(model, 30)
-torch.save(model.state_dict(), 'MODEL.pth')
+train_model(model, 100)
+torch.save(model.state_dict(), 'MODEL2.pth')
