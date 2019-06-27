@@ -79,8 +79,8 @@ class LangModel(torch.nn.Module):
         self.embedding   = torch.nn.Embedding(vocab_size, embedding_dim=emb_size)
         self.LSTM = torch.nn.LSTM(input_size=emb_size, hidden_size=hidden_size,
                                   batch_first=True)
-        self.fc1 = torch.nn.Linear(hidden_size, 2*hidden_size)
-        self.fc2 = torch.nn.Linear(2*hidden_size, vocab_size)
+        # self.fc1 = torch.nn.Linear(hidden_size, 2*hidden_size)
+        # self.fc2 = torch.nn.Linear(2*hidden_size, vocab_size)
         self.fc3 = torch.nn.Linear(hidden_size, vocab_size)
         self.dropout = torch.nn.Dropout(dropout)
 
